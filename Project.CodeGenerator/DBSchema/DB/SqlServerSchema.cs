@@ -6,7 +6,7 @@ namespace Project.CodeGenerator.DBSchema
 {
     public class SqlServerSchema : IDBSchema
     {
-        public string ConnectionString = "Data Source=.;Initial Catalog=Test2;Persist Security Info=True;User ID=sa;Password=123;";
+        public string ConnectionString = "Data Source=.;Initial Catalog=Test1;Persist Security Info=True;User ID=sa;Password=123;";
 
         public SqlConnection conn;
 

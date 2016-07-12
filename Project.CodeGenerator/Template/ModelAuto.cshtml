@@ -18,7 +18,7 @@ namespace @namespaceVal
     #region Attributes
     @foreach (Column c in table.Columns)
     {
-        string isNullable = c.TypeName== "String"||c.IsPK?"":"?";
+        string isNullable = c.TypeName== "String"|| c.TypeName == "Byte[]" || !c.AllowDBNull?"":"?";
         <h1>private @c.TypeName@isNullable @c.LowerColumnName;
             public @c.TypeName@isNullable @c.UpColumnName
             {
