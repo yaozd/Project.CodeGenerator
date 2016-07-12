@@ -1,0 +1,33 @@
+﻿@using System.Linq
+@using Project.CodeGenerator.DBSchema
+@using RazorEngine.Text
+@{
+    Table table = (Table)Model;
+    string classnameVal = ViewBag.classnameVal;
+    string namespaceVal = ViewBag.namespaceVal;
+}
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace @namespaceVal
+{
+    [Serializable]
+	public partial class @classnameVal
+    {
+    #region Attributes
+    @foreach (Column c in table.Columns)
+    {
+        string isNullable = c.TypeName== "String"||c.IsPK?"":"?";
+        <h1>private @c.TypeName@isNullable @c.LowerColumnName;
+            public @c.TypeName@isNullable @c.UpColumnName
+            {
+            get { return @c.LowerColumnName; }
+            set { @c.LowerColumnName = value; }
+            }</h1>
+    }
+    #endregion
+    }
+ }
+
+
