@@ -17,7 +17,7 @@ namespace Project.CodeGenerator
             //生成Model================================================
             var templateFileName = "ModelAuto";
             var savePath = @"D:\._1\Model";
-            var _namespaceVal = "Project.CodeGenerator.Model";
+            var _namespaceVal = "DapperTemplate.Model";
             GenerateTemplate_Model(templateFileName, tableList, dbSchema, _namespaceVal, savePath);
             return;
             //生成Dao================================================

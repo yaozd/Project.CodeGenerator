@@ -50,7 +50,7 @@ namespace Project.CodeGenerator.Utils
 
         public static string Clean(string generator, Regex re)
         {
-            return re.Replace(generator, "$1");
+            return re.Replace(generator, "");
         }
     }
 }

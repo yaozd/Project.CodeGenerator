@@ -19,12 +19,17 @@ namespace @namespaceVal
     @foreach (Column c in table.Columns)
     {
         string isNullable = c.TypeName== "String"|| c.TypeName == "Byte[]" || !c.AllowDBNull?"":"?";
-        <h1>private @c.TypeName@isNullable @c.LowerColumnName;
+        <h1>/// <summary>
+            /// @c.UpColumnName
+            /// IsNullable=@c.AllowDBNull
+            ///</summary>
+            private @c.TypeName@isNullable @c.LowerColumnName;
             public @c.TypeName@isNullable @c.UpColumnName
             {
             get { return @c.LowerColumnName; }
             set { @c.LowerColumnName = value; }
-            }</h1>
+            }
+        </h1>
     }
     #endregion
     }

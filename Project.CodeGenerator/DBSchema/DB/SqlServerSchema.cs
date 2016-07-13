@@ -6,7 +6,7 @@ namespace Project.CodeGenerator.DBSchema
 {
     public class SqlServerSchema : IDBSchema
     {
-        public string ConnectionString = "Data Source=.;Initial Catalog=Test1;Persist Security Info=True;User ID=sa;Password=123;";
+        public string ConnectionString = "Data Source=.;Initial Catalog=Test3;Persist Security Info=True;User ID=sa;Password=123;";
 
         public SqlConnection conn;
 
@@ -29,7 +29,7 @@ namespace Project.CodeGenerator.DBSchema
 
         public Table GetTableMetadata(string tableName)
         {
-            string selectCmdText = string.Format("SELECT * FROM {0}", tableName);
+            string selectCmdText = string.Format("SELECT * FROM [{0}]", tableName);
             ;
             SqlCommand command = new SqlCommand(selectCmdText, conn);
             SqlDataAdapter ad = new SqlDataAdapter(command);
