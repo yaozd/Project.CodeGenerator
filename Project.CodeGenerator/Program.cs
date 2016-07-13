@@ -41,6 +41,7 @@ namespace Project.CodeGenerator
             foreach (var tableName in tableList)
             {
                 var table = dbSchema.GetTableMetadata(tableName);
+                if(table.PKs.Count==0)throw new Exception(string.Format("表{0}:没有设置主键！",tableName));
                 Display(tableName, table);
                 var classnameVal = tableName;
                 var namespaceVal = _namespaceVal;
