@@ -19,6 +19,7 @@ namespace Project.CodeGenerator
             var savePath = @"D:\._1\Model";
             var _namespaceVal = "Project.CodeGenerator.Model";
             GenerateTemplate_Model(templateFileName, tableList, dbSchema, _namespaceVal, savePath);
+            return;
             //生成Dao================================================
             templateFileName = "ModelAuto";
             savePath = @"D:\._1\Dao";

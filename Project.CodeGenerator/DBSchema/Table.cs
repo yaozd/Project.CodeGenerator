@@ -8,16 +8,16 @@ namespace Project.CodeGenerator.DBSchema
     {
         public Table(DataTable t)
         {
+            this.TableName = t.TableName;
             this.PKs = this.GetPKList(t);
             this.Columns = this.GetColumnList(t);
             this.ColumnNames = this.SetColumnNames();
             this.ColumnTypeNames = this.SetColumnTypeNames();
         }
 
+        public string TableName;
         public List<Column> PKs;
-
         public List<Column> Columns;
-
         public string ColumnNames;
         public string ColumnTypeNames;
         public List<Column> GetPKList(DataTable dt)
