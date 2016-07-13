@@ -62,7 +62,7 @@ namespace Project.CodeGenerator
                 if (table.PKs.Count == 0) throw new Exception(string.Format("表{0}:没有设置主键！", tableName));
                 Display(tableName, table);
                 dynamic viewbag = new DynamicViewBag();
-                viewbag.classnameVal = tableName;
+                viewbag.classnameVal = tableName+"Dao";
                 viewbag.namespaceVal = daoNamespaceVal;
                 viewbag.modelNamespaceVal = modelNamespaceVal;
                 var outputText = TemplateHelper.Parse(TemplateKey.Dao, templateText, table, viewbag);

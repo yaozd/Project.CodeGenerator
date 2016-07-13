@@ -7,6 +7,7 @@
 @{
     Table table = (Table)Model;
     string tableName = table.TableName;
+    string modelClassName = tableName;
     string classnameVal = ViewBag.classnameVal;
     string namespaceVal = ViewBag.namespaceVal;
     string modelNamespaceVal = ViewBag.modelNamespaceVal;
@@ -36,7 +37,7 @@ public class @classnameVal
         FunAdd_Columns = FunAdd_Columns.TrimEnd(',');
         FunAdd_Params = FunAdd_Params.TrimEnd(',');
     }
-    public int Add(User model)
+    public int Add(@modelClassName model)
     {
     StringBuilder strSql = new StringBuilder();
     strSql.Append("insert into [@tableName](");
