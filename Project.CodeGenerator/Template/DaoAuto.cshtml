@@ -13,14 +13,15 @@
     string modelNamespaceVal = ViewBag.modelNamespaceVal;
 }
 <h1>
-using System.Text;
-using DapperExt;
-using @modelNamespaceVal;
+    using System;
+    using System.Text;
+    using DapperExt;
+    using @modelNamespaceVal;
 
-namespace @namespaceVal
-{
-public class @classnameVal 
-{
+    namespace @namespaceVal
+    {
+    public class @classnameVal
+    {
     //
     @{
         string FunAdd_Columns = "";
@@ -48,6 +49,38 @@ public class @classnameVal
     var id= DbHelperSql.InsertReturnId(strSql.ToString(), model);
     return id;
     }
-}
-}
+    //
+    @{
+        string FunDeleteById_Where = "";
+        string FunDeleteById_ParamsFun = "";
+        string FunDeleteById_ParamsModel = "";
+        for (int i = 0; i < table.PKs.Count; i++)
+        {
+            Column c = table.PKs[i];
+            string name = c.ColumnName;
+            string lowerName = c.LowerColumnName;
+            string typeName = c.TypeName;
+            if (i == 0)
+            {
+                FunDeleteById_Where += string.Format(" {0}=@{1} ", name, lowerName);
+                FunDeleteById_ParamsFun += string.Format(" {0} {1} ", typeName, lowerName);
+                FunDeleteById_ParamsModel += string.Format(" {0}={1} ", name, lowerName);
+                continue;
+            }
+            FunDeleteById_Where += string.Format(" and {0}=@{1} ", name,lowerName);
+            FunDeleteById_ParamsFun += string.Format(" ,{0} {1} ", typeName, lowerName);
+            FunDeleteById_ParamsModel += string.Format(" , {0}={1} ", name, lowerName);
+        }
+    }
+    public bool DeleteById(@FunDeleteById_ParamsFun)
+    {
+    StringBuilder strSql = new StringBuilder();
+    strSql.Append("delete from [@tableName] ");
+    strSql.Append("where @FunDeleteById_Where");
+    //
+    var flag= DbHelperSql.Delete(strSql.ToString(), new @modelClassName { @FunDeleteById_ParamsModel });
+    return flag;
+    }
+    }
+    }
 </h1>
