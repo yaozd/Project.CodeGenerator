@@ -67,7 +67,7 @@
                 FunDeleteById_ParamsModel += string.Format(" {0}={1} ", name, lowerName);
                 continue;
             }
-            FunDeleteById_Where += string.Format(" and {0}=@{1} ", name,lowerName);
+            FunDeleteById_Where += string.Format(" and {0}=@{1} ", name, lowerName);
             FunDeleteById_ParamsFun += string.Format(" ,{0} {1} ", typeName, lowerName);
             FunDeleteById_ParamsModel += string.Format(" , {0}={1} ", name, lowerName);
         }
@@ -81,6 +81,65 @@
     var flag= DbHelperSql.Delete(strSql.ToString(), new @modelClassName { @FunDeleteById_ParamsModel });
     return flag;
     }
+    //
+    @{
+        string FunUpdateById_Where = "";
+        string FunUpdateById_ParamsFun = "";
+        for (int i = 0; i < table.PKs.Count; i++)
+        {
+            Column c = table.PKs[i];
+            string name = c.ColumnName;
+            string lowerName = c.LowerColumnName;
+            string upName = c.UpColumnName;
+            string typeName = c.TypeName;
+            if (i == 0)
+            {
+                FunUpdateById_Where += string.Format(" {0}=@{1} ", name, lowerName);
+                FunUpdateById_ParamsFun += string.Format(" {0} {1} ", typeName, lowerName);
+                continue;
+            }
+            FunDeleteById_ParamsFun += string.Format(" ,{0} {1} ", typeName, lowerName);
+            FunUpdateById_Where += string.Format(" and {0}=@{1} ", name, lowerName);
+        }
+    }
+    public bool UpdateById(@modelClassName model, @FunUpdateById_ParamsFun)
+    {
+    @{
+        for (int i = 0; i < table.PKs.Count; i++)
+        {
+            Column c = table.PKs[i];
+            string lowerName = c.LowerColumnName;
+            string upName = c.UpColumnName;
+            <h2>model.@upName = @lowerName;</h2>
+        }
+    }
+    StringBuilder strSql = new StringBuilder();
+    strSql.Append("update User set ");
+    @{
+        int FunUpdateById_Count = table.Columns.Count;
+        for (int i = 0; i < table.Columns.Count; i++)
+        {
+            Column c = table.Columns[i];
+            string name = c.ColumnName;
+            string lowerName = c.LowerColumnName;
+            string upName = "@" + c.UpColumnName;
+            if (c.IsPK || c.IsTimestamp)
+            {
+                continue;
+            }
+            <h2>
+                if(model.@upName!=null)
+                strSql.Append("@name=@upName,");
+            </h2>
+        }
+    }
+    int n = strSql.ToString().LastIndexOf(",", StringComparison.Ordinal);
+    if(n>0)strSql.Remove(n, 1);
+    strSql.Append(" where UserId=@FunUpdateById_Where");
+    var flag = DbHelperSql.Update(strSql.ToString(), model);
+    return flag;
+    }
+    //
     }
     }
 </h1>

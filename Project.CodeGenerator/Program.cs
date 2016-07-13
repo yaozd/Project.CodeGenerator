@@ -67,6 +67,7 @@ namespace Project.CodeGenerator
                 viewbag.modelNamespaceVal = modelNamespaceVal;
                 var outputText = TemplateHelper.Parse(TemplateKey.Dao, templateText, table, viewbag);
                 outputText = TemplateHelper.Clean(outputText, RegexPub.H1());
+                outputText = TemplateHelper.Clean(outputText, RegexPub.H2());
                 FileHelper.Save(string.Format(@"{0}\{1}.cs", savePath, viewbag.classnameVal), outputText);
             }
         }
