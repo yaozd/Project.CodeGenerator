@@ -1,0 +1,52 @@
+﻿@using System.Collections
+@using System.Collections.Generic
+@using System.Linq
+@using System.Text
+@using Project.CodeGenerator.DBSchema
+@using RazorEngine.Text
+@{
+    Table table = (Table)Model;
+    string tableName = table.TableName;
+    string classnameVal = ViewBag.classnameVal;
+    string namespaceVal = ViewBag.namespaceVal;
+    string modelNamespaceVal = ViewBag.modelNamespaceVal;
+}
+<h1>
+using System.Text;
+using DapperExt;
+using @modelNamespaceVal;
+
+namespace @namespaceVal
+{
+public class @classnameVal 
+{
+    //
+    @{
+        string FunAdd_Columns = "";
+        string FunAdd_Params = "";
+        foreach (Column c in table.Columns)
+        {
+            if (c.IsPK || c.IsTimestamp)
+            {
+                continue;
+            }
+            FunAdd_Columns += c.ColumnName + ",";
+            FunAdd_Params += "@" + c.ColumnName + ",";
+        }
+        FunAdd_Columns = FunAdd_Columns.TrimEnd(',');
+        FunAdd_Params = FunAdd_Params.TrimEnd(',');
+    }
+    public int Add(User model)
+    {
+    StringBuilder strSql = new StringBuilder();
+    strSql.Append("insert into [@tableName](");
+    strSql.Append("@FunAdd_Columns)");
+    strSql.Append(" values (");
+    strSql.Append("@FunAdd_Params)");
+    //
+    var id= DbHelperSql.InsertReturnId(strSql.ToString(), model);
+    return id;
+    }
+}
+}
+</h1>

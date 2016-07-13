@@ -23,11 +23,8 @@ namespace Project.CodeGenerator.Utils
             return ReadTemplate("Template", fileName+ ".cshtml", encoding);
         }
 
-        public static string Parse(TemplateKey templateKey, string template, object model, string classnameVal, string namespaceVal)
+        public static string Parse(TemplateKey templateKey, string template, object model, DynamicViewBag viewbag)
         {
-            dynamic viewbag = new DynamicViewBag();
-            viewbag.classnameVal = classnameVal;
-            viewbag.namespaceVal = namespaceVal;
             var result = Engine.Razor.RunCompile(template, templateKey.ToString("G"), null, model, (DynamicViewBag)viewbag);
             return result;
         }

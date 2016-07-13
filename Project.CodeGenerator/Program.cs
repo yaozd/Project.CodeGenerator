@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Project.CodeGenerator.DBSchema;
 using Project.CodeGenerator.EnumExt;
 using Project.CodeGenerator.Utils;
+using RazorEngine.Templating;
 
 namespace Project.CodeGenerator
 {
@@ -17,24 +18,24 @@ namespace Project.CodeGenerator
             //生成Model================================================
             var templateFileName = "ModelAuto";
             var savePath = @"D:\._1\Model";
-            var _namespaceVal = "DapperTemplate.Model";
-            GenerateTemplate_Model(templateFileName, tableList, dbSchema, _namespaceVal, savePath);
-            return;
+            var modelNamespaceVal = "DapperTemplate.Model";
+            GenerateTemplate_Model(templateFileName, tableList, dbSchema, modelNamespaceVal, savePath);
+            //return;
             //生成Dao================================================
-            templateFileName = "ModelAuto";
+            templateFileName = "DaoAuto";
             savePath = @"D:\._1\Dao";
-            _namespaceVal = "Project.CodeGenerator.Model";
-            GenerateTemplate_Model(templateFileName, tableList, dbSchema, _namespaceVal, savePath);
+            var daoNamespaceVal = "Project.CodeGenerator.Dao";
+            GenerateTemplate_Dao(templateFileName, tableList, dbSchema, daoNamespaceVal,modelNamespaceVal, savePath);
+            return;
             //生成Service================================================
-            templateFileName = "ModelAuto";
-            savePath = @"D:\._1\Service";
-            _namespaceVal = "Project.CodeGenerator.Model";
-            GenerateTemplate_Model(templateFileName, tableList, dbSchema, _namespaceVal, savePath);
+            //templateFileName = "ModelAuto";
+            //savePath = @"D:\._1\Service";
+            //_namespaceVal = "Project.CodeGenerator.Model";
+            //GenerateTemplate_Model(templateFileName, tableList, dbSchema, _namespaceVal, savePath);
             //Pause();
         }
 
-        private static void GenerateTemplate_Model(string templateFileName, List<string> tableList, IDBSchema dbSchema,
-            string _namespaceVal, string savePath)
+        private static void GenerateTemplate_Model(string templateFileName, List<string> tableList, IDBSchema dbSchema,string modelNamespaceVal, string savePath)
         {
             DisplayTemplateName(templateFileName);
             var templateText = TemplateHelper.ReadTemplate(templateFileName);
@@ -43,15 +44,32 @@ namespace Project.CodeGenerator
                 var table = dbSchema.GetTableMetadata(tableName);
                 if(table.PKs.Count==0)throw new Exception(string.Format("表{0}:没有设置主键！",tableName));
                 Display(tableName, table);
-                var classnameVal = tableName;
-                var namespaceVal = _namespaceVal;
-                var outputText = TemplateHelper.Parse(TemplateKey.TemplateModel, templateText, table, classnameVal,
-                    namespaceVal);
+                dynamic viewbag = new DynamicViewBag();
+                viewbag.classnameVal = tableName;
+                viewbag.namespaceVal = modelNamespaceVal;
+                var outputText = TemplateHelper.Parse(TemplateKey.Model, templateText, table, viewbag);
                 outputText = TemplateHelper.Clean(outputText, RegexPub.H1());
-                FileHelper.Save(string.Format(@"{0}\{1}.cs", savePath, classnameVal), outputText);
+                FileHelper.Save(string.Format(@"{0}\{1}.cs", savePath, viewbag.classnameVal), outputText);
             }
         }
-
+        private static void GenerateTemplate_Dao(string templateFileName, List<string> tableList, IDBSchema dbSchema, string daoNamespaceVal, string modelNamespaceVal, string savePath)
+        {
+            DisplayTemplateName(templateFileName);
+            var templateText = TemplateHelper.ReadTemplate(templateFileName);
+            foreach (var tableName in tableList)
+            {
+                var table = dbSchema.GetTableMetadata(tableName);
+                if (table.PKs.Count == 0) throw new Exception(string.Format("表{0}:没有设置主键！", tableName));
+                Display(tableName, table);
+                dynamic viewbag = new DynamicViewBag();
+                viewbag.classnameVal = tableName;
+                viewbag.namespaceVal = daoNamespaceVal;
+                viewbag.modelNamespaceVal = modelNamespaceVal;
+                var outputText = TemplateHelper.Parse(TemplateKey.Dao, templateText, table, viewbag);
+                outputText = TemplateHelper.Clean(outputText, RegexPub.H1());
+                FileHelper.Save(string.Format(@"{0}\{1}.cs", savePath, viewbag.classnameVal), outputText);
+            }
+        }
 
         private static void Pause()
         {

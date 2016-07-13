@@ -2,7 +2,7 @@
 {
     public enum TemplateKey
     {
-        TemplateModel=1,
-        TemplateDao= 2,
+        Model=1,
+        Dao= 2,
     }
 }
