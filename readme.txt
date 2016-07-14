@@ -1,4 +1,6 @@
 
+1.示例代码：DapperTemplate https://github.com/yaozd/DapperTemplate
+
 原由：T4模版不易调试，则改用.NET的模板引擎来生成代码
 
 1.NET的模板引擎
