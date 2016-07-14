@@ -7,6 +7,7 @@
 @{
     Table table = (Table)Model;
     string tableName = table.TableName;
+    string columnNames = table.ColumnNames;
     string modelClassName = tableName;
     string classnameVal = ViewBag.classnameVal;
     string namespaceVal = ViewBag.namespaceVal;
@@ -140,6 +141,41 @@
     strSql.Append(" where @FunUpdateById_Where");
     var flag = DbHelperSql.Update(strSql.ToString(), model);
     return flag;
+    }
+    //
+    @{
+        string FunFindById_Where = "";
+        string FunFindById_ParamsFun = "";
+        string FunFindById_ParamsModel = "";
+        for (int i = 0; i < table.PKs.Count; i++)
+        {
+            Column c = table.PKs[i];
+            string name = c.ColumnName;
+            string lowerName = c.LowerColumnName;
+            string typeName = c.TypeName;
+            if (i == 0)
+            {
+                FunFindById_Where += string.Format(" {0}=@{1} ", name, lowerName);
+                FunFindById_ParamsFun += string.Format(" {0} {1} ", typeName, lowerName);
+                FunFindById_ParamsModel += string.Format(" {0}={1} ", name, lowerName);
+                continue;
+            }
+            FunFindById_Where += string.Format(" and {0}=@{1} ", name, lowerName);
+            FunFindById_ParamsFun += string.Format(" ,{0} {1} ", typeName, lowerName);
+            FunFindById_ParamsModel += string.Format(" , {0}={1} ", name, lowerName);
+        }
+    }
+    public User FindById(@FunFindById_ParamsFun)
+    {
+    //默认top 1--1条记录
+    StringBuilder strSql = new StringBuilder();
+    strSql.Append("select  top 1 ");
+    strSql.Append("@columnNames  ");
+    strSql.Append("from [@tableName] ");
+    strSql.Append("where @FunFindById_Where");
+    //
+    var result = DbHelperSql.Find(strSql.ToString(), new @modelClassName { @FunFindById_ParamsModel });
+    return result;
     }
     //
     }
