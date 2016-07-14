@@ -24,7 +24,7 @@ namespace Project.CodeGenerator
             //生成Dao================================================
             templateFileName = "DaoAuto";
             savePath = @"D:\._1\Dao";
-            var daoNamespaceVal = "Project.CodeGenerator.Dao";
+            var daoNamespaceVal = "DapperTemplate.Dao";
             GenerateTemplate_Dao(templateFileName, tableList, dbSchema, daoNamespaceVal,modelNamespaceVal, savePath);
             return;
             //生成Service================================================

@@ -15,6 +15,7 @@
 }
 <h1>
     using System;
+    using System.Collections.Generic;
     using System.Text;
     using DapperExt;
     using @modelNamespaceVal;
@@ -60,24 +61,25 @@
             Column c = table.PKs[i];
             string name = c.ColumnName;
             string lowerName = c.LowerColumnName;
+            string upName = c.UpColumnName;
             string typeName = c.TypeName;
             if (i == 0)
             {
                 FunDeleteById_Where += string.Format(" {0}=@{1} ", name, lowerName);
                 FunDeleteById_ParamsFun += string.Format(" {0} {1} ", typeName, lowerName);
-                FunDeleteById_ParamsModel += string.Format(" {0}={1} ", name, lowerName);
+                FunDeleteById_ParamsModel += string.Format(" {0}={1} ", upName, lowerName);
                 continue;
             }
             FunDeleteById_Where += string.Format(" and {0}=@{1} ", name, lowerName);
             FunDeleteById_ParamsFun += string.Format(" ,{0} {1} ", typeName, lowerName);
-            FunDeleteById_ParamsModel += string.Format(" , {0}={1} ", name, lowerName);
+            FunDeleteById_ParamsModel += string.Format(" , {0}={1} ", upName, lowerName);
         }
     }
     public bool DeleteById(@FunDeleteById_ParamsFun)
     {
     StringBuilder strSql = new StringBuilder();
     strSql.Append("delete from [@tableName] ");
-    strSql.Append("where @FunDeleteById_Where");
+    strSql.Append("where @FunDeleteById_Where ");
     //
     var flag= DbHelperSql.Delete(strSql.ToString(), new @modelClassName { @FunDeleteById_ParamsModel });
     return flag;
@@ -138,7 +140,7 @@
     }
     int n = strSql.ToString().LastIndexOf(",", StringComparison.Ordinal);
     if(n>0)strSql.Remove(n, 1);
-    strSql.Append(" where @FunUpdateById_Where");
+    strSql.Append(" where @FunUpdateById_Where ");
     var flag = DbHelperSql.Update(strSql.ToString(), model);
     return flag;
     }
@@ -152,29 +154,65 @@
             Column c = table.PKs[i];
             string name = c.ColumnName;
             string lowerName = c.LowerColumnName;
+            string upName = c.UpColumnName;
             string typeName = c.TypeName;
             if (i == 0)
             {
                 FunFindById_Where += string.Format(" {0}=@{1} ", name, lowerName);
                 FunFindById_ParamsFun += string.Format(" {0} {1} ", typeName, lowerName);
-                FunFindById_ParamsModel += string.Format(" {0}={1} ", name, lowerName);
+                FunFindById_ParamsModel += string.Format(" {0}={1} ", upName, lowerName);
                 continue;
             }
             FunFindById_Where += string.Format(" and {0}=@{1} ", name, lowerName);
             FunFindById_ParamsFun += string.Format(" ,{0} {1} ", typeName, lowerName);
-            FunFindById_ParamsModel += string.Format(" , {0}={1} ", name, lowerName);
+            FunFindById_ParamsModel += string.Format(" , {0}={1} ", upName, lowerName);
         }
     }
-    public User FindById(@FunFindById_ParamsFun)
+    public @modelClassName FindById(@FunFindById_ParamsFun)
     {
     //默认top 1--1条记录
     StringBuilder strSql = new StringBuilder();
     strSql.Append("select  top 1 ");
     strSql.Append("@columnNames  ");
     strSql.Append("from [@tableName] ");
-    strSql.Append("where @FunFindById_Where");
+    strSql.Append("where @FunFindById_Where ");
     //
     var result = DbHelperSql.Find(strSql.ToString(), new @modelClassName { @FunFindById_ParamsModel });
+    return result;
+    }
+    //
+    public IList<@modelClassName>FindList(@modelClassName whereModel, string where, int top)
+        {
+        StringBuilder strSql = new StringBuilder();
+        strSql.AppendFormat("select top {0} ",top);
+        strSql.Append("@columnNames  ");
+        strSql.Append("from [@tableName] ");
+        strSql.AppendFormat("where 1=1 and {0} ", where);
+        var result = DbHelperSql.FindList<@modelClassName>
+    (strSql.ToString(), whereModel);
+    return result;
+    }
+    //
+    public IList<@modelClassName> FindListByPage(@modelClassName whereModel, string where, string orderBy, int pageIndex, int pageSize)
+        {
+        var startIndex = pageIndex * pageSize;
+        var size = pageSize;
+        StringBuilder strSql = new StringBuilder();
+        strSql.Append("select ");
+        strSql.Append("@columnNames ");
+        strSql.Append("from [@tableName] ");
+        strSql.AppendFormat("where 1=1 and {0} ", where);
+        strSql.AppendFormat("ORDER BY {0} OFFSET {1} ROWS FETCH NEXT {2} ROWS ONLY", orderBy, startIndex, size);
+        var result = DbHelperSql.FindList<@modelClassName>(strSql.ToString(), whereModel);
+        return result;
+    }
+    //
+    public int Count(@modelClassName whereModel, string where)
+    {
+    StringBuilder strSql = new StringBuilder();
+    strSql.Append("select  count(*) from [@tableName] ");
+    strSql.AppendFormat("where 1=1 and {0} ", where);
+    var result = DbHelperSql.Count(strSql.ToString(), whereModel);
     return result;
     }
     //
