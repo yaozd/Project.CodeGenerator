@@ -51,7 +51,7 @@ namespace Project.CodeGenerator.Utils
 
         public static void Save(string path, string input)
         {
-            byte[] inputBytes = System.Text.Encoding.GetEncoding("utf-8").GetBytes(input);
+            byte[] inputBytes = System.Text.Encoding.GetEncoding("GBK").GetBytes(input);
             Save(path, inputBytes);
         }
 
